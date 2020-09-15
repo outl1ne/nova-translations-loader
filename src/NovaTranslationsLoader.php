@@ -7,20 +7,28 @@ use Illuminate\Support\ServiceProvider;
 
 class NovaTranslationsLoader extends ServiceProvider
 {
-    protected $packageDir;
+    protected $packageTranslationsDir;
     protected $packageName;
     protected $publishTranslations;
 
-    public function __construct($packageDir = __DIR__, $packageName, $publishTranslations = true)
+    public function __construct($packageTranslationsDir = __DIR__, $packageName, $publishTranslations = true)
     {
-        $this->packageDir = $packageDir;
+        $this->packageTranslationsDir = $packageTranslationsDir;
         $this->packageName = $packageName;
         $this->publishTranslations = $publishTranslations;
     }
 
-    public static function loadTranslations($packageDir = __DIR__, $packageName, $publishTranslations = true)
+    /**
+     * Loads translations into the Nova system.
+     *
+     * @param string $packageTranslationsDir The directory for the packages' translation files.
+     * @param string $packageName The name of the current package (ie 'nova-menu-builder').
+     * @param boolean $publishTranslations Whether to also automatically make translations publishable.
+     * @return null
+     **/
+    public static function loadTranslations($packageTranslationsDir = __DIR__, $packageName, $publishTranslations = true)
     {
-        $translationsLoader = new NovaTranslationsLoader($packageDir, $packageName, $publishTranslations);
+        $translationsLoader = new NovaTranslationsLoader($packageTranslationsDir, $packageName, $publishTranslations);
         return $translationsLoader->translations();
     }
 
