@@ -28,6 +28,9 @@ class NovaTranslationsLoader extends ServiceProvider
      **/
     public static function loadTranslations($packageTranslationsDir = __DIR__, $packageName, $publishTranslations = true)
     {
+        $packageTranslationsDir = rtrim($packageTranslationsDir, '/');
+        $packageName = trim($packageName);
+
         $translationsLoader = new NovaTranslationsLoader($packageTranslationsDir, $packageName, $publishTranslations);
         return $translationsLoader->translations();
     }
@@ -35,7 +38,7 @@ class NovaTranslationsLoader extends ServiceProvider
     protected function translations()
     {
         if (app()->runningInConsole() && $this->publishTranslations) {
-            $this->publishes(["{$this->packageDir}/../resources/lang" => resource_path("lang/vendor/{$this->packageName}")], 'translations');
+            $this->publishes([$this->packageTranslationsDir => resource_path("lang/vendor/{$this->packageName}")], 'translations');
             return;
         }
 
@@ -54,7 +57,7 @@ class NovaTranslationsLoader extends ServiceProvider
     protected function attemptToLoadTranslations($locale, $from)
     {
         $filePath = $from === 'local'
-            ? "{$this->packageDir}/../resources/lang/{$locale}.json"
+            ? "{$this->packageTranslationsDir}/{$locale}.json"
             : resource_path("lang/vendor/{$this->packageName}/{$locale}.json");
 
         $localeFileExists = File::exists($filePath);
