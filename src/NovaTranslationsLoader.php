@@ -3,6 +3,7 @@
 namespace OptimistDigital\NovaTranslationsLoader;
 
 use Laravel\Nova\Nova;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
 class NovaTranslationsLoader extends ServiceProvider
@@ -13,6 +14,7 @@ class NovaTranslationsLoader extends ServiceProvider
 
     public function __construct($packageTranslationsDir = __DIR__, $packageName, $publishTranslations = true)
     {
+        $this->app = app();
         $this->packageTranslationsDir = $packageTranslationsDir;
         $this->packageName = $packageName;
         $this->publishTranslations = $publishTranslations;
