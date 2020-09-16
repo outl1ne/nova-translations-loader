@@ -10,7 +10,7 @@ This [Laravel Nova](https://nova.laravel.com/) package helps developers load tra
 Install the package in a Laravel Nova project via Composer:
 
 ```bash
-composer require optimistdigital/nova-menu-builder
+composer require optimistdigital/nova-translations-loader
 ```
 
 ## Usage
