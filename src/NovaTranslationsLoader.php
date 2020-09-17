@@ -58,12 +58,15 @@ class NovaTranslationsLoader extends ServiceProvider
 
     protected function attemptToLoadTranslations($locale, $from)
     {
-        $filePath = $from === 'local'
-            ? "{$this->packageTranslationsDir}/{$locale}.json"
-            : resource_path("lang/vendor/{$this->packageName}/{$locale}.json");
+        $fileDir = $from === 'local'
+            ? "{$this->packageTranslationsDir}"
+            : resource_path("lang/vendor/{$this->packageName}");
+
+        $filePath = "$fileDir/{$locale}.json";
 
         $localeFileExists = File::exists($filePath);
         if ($localeFileExists) {
+            $this->loadJsonTranslationsFrom($fileDir);
             Nova::translations($filePath);
             return true;
         }
