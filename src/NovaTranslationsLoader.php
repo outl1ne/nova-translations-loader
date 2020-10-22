@@ -13,10 +13,10 @@ class NovaTranslationsLoader extends ServiceProvider
     protected $packageName;
     protected $publishTranslations;
 
-    public function __construct($packageTranslationsDir = __DIR__, $packageName, $publishTranslations = true)
+    public function __construct($packageTranslationsDir, $packageName, $publishTranslations = true)
     {
         $this->app = app();
-        $this->packageTranslationsDir = $packageTranslationsDir;
+        $this->packageTranslationsDir = $packageTranslationsDir ?? __DIR__ . '/../resources/lang';
         $this->packageName = $packageName;
         $this->publishTranslations = $publishTranslations;
     }
@@ -29,8 +29,9 @@ class NovaTranslationsLoader extends ServiceProvider
      * @param boolean $publishTranslations Whether to also automatically make translations publishable.
      * @return null
      **/
-    public static function loadTranslations($packageTranslationsDir = __DIR__, $packageName, $publishTranslations = true)
+    public static function loadTranslations($packageTranslationsDir, $packageName, $publishTranslations = true)
     {
+        $packageTranslationsDir = $packageTranslationsDir ?? __DIR__ . '/../resources/lang';
         $packageTranslationsDir = rtrim($packageTranslationsDir, '/');
         $packageName = trim($packageName);
 
