@@ -3,6 +3,7 @@
 namespace OptimistDigital\NovaTranslationsLoader;
 
 use Laravel\Nova\Nova;
+use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
@@ -45,14 +46,16 @@ class NovaTranslationsLoader extends ServiceProvider
         }
 
         if (method_exists('Nova', 'translations')) {
-            $locale = app()->getLocale();
-            $fallbackLocale = config('app.fallback_locale');
+            Nova::serving(function (ServingNova $event) {
+                $locale = app()->getLocale();
+                $fallbackLocale = config('app.fallback_locale');
 
-            if ($this->attemptToLoadTranslations($locale, 'project')) return;
-            if ($this->attemptToLoadTranslations($locale, 'local')) return;
-            if ($this->attemptToLoadTranslations($fallbackLocale, 'project')) return;
-            if ($this->attemptToLoadTranslations($fallbackLocale, 'local')) return;
-            $this->attemptToLoadTranslations('en', 'local');
+                if ($this->attemptToLoadTranslations($locale, 'project')) return;
+                if ($this->attemptToLoadTranslations($locale, 'local')) return;
+                if ($this->attemptToLoadTranslations($fallbackLocale, 'project')) return;
+                if ($this->attemptToLoadTranslations($fallbackLocale, 'local')) return;
+                $this->attemptToLoadTranslations('en', 'local');
+            });
         }
     }
 
