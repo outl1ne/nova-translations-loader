@@ -16,10 +16,7 @@
   "autoload": {
     "psr-4": {
       "OptimistDigital\\NovaTranslationsLoader\\": "src/"
-    },
-    "files": [
-      "./src/helpers.php"
-    ]
+    }
   },
   "extra": {
     "laravel": {
