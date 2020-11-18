@@ -90,7 +90,9 @@ trait LoadsNovaTranslations
     {
         $fileContents = file_get_contents($filePath);
         $lines = collect(json_decode($fileContents, true))
-            ->mapWithKeys(fn ($value, $key) => [Str::contains($key, '.') ? $key : "*.$key" => $value])
+            ->mapWithKeys(function ($value, $key) {
+                return [Str::contains($key, '.') ? $key : "*.$key" => $value];
+            })
             ->toArray();
 
         app('translator')->addLines($lines, $locale);
