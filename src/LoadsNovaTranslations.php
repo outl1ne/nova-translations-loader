@@ -70,33 +70,29 @@ trait LoadsNovaTranslations
         $locale = app()->getLocale();
         $fbLocale = app()->getFallbackLocale();
 
-        // Main locale
-        $mainTransFile = $this->getTranslationsFile($locale, 'project', $pckgTransDir, $pckgName);
-        if (!$mainTransFile) $mainTransFile = $this->getTranslationsFile($locale, 'local', $pckgTransDir, $pckgName);
-        if ($mainTransFile) $this->loadTranslationsFromFileIntoTranslator($mainTransFile, $locale);
-
-
-        // Fallback locale
-        $fallbackTransFile = $this->getTranslationsFile($fbLocale, 'project', $pckgTransDir, $pckgName);
-        if (!$fallbackTransFile) $fallbackTransFile = $this->getTranslationsFile($fbLocale, 'local', $pckgTransDir, $pckgName);
-        if ($fallbackTransFile) $this->loadTranslationsFromFileIntoTranslator($fallbackTransFile, $fbLocale);
-
-        if (!$fallbackTransFile && !$mainTransFile) {
-            $enTransFile =  $this->getTranslationsFile('en', 'local', $pckgTransDir, $pckgName);
-            if ($enTransFile) $this->loadTranslationsFromFileIntoTranslator($enTransFile, 'en');
-        }
+        $this->loadLaravelTranslationsForLocale($locale, $pckgTransDir, $pckgName);
+        $this->loadLaravelTranslationsForLocale($fbLocale, $pckgTransDir, $pckgName);
+        $this->loadLaravelTranslationsForLocale('en', $pckgTransDir, $pckgName);
     }
 
-    private function loadTranslationsFromFileIntoTranslator($filePath, $locale)
+    private function loadLaravelTranslationsForLocale($locale, $pckgTransDir, $pckgName)
     {
-        $fileContents = file_get_contents($filePath);
-        $lines = collect(json_decode($fileContents, true))
-            ->mapWithKeys(function ($value, $key) {
-                return [Str::contains($key, '.') ? $key : "*.$key" => $value];
-            })
-            ->toArray();
+        $projectTransFile = $this->getTranslationsFile($locale, 'project', $pckgTransDir, $pckgName);
+        $packageTransFile = $this->getTranslationsFile($locale, 'local', $pckgTransDir, $pckgName);
+        if (!isset($projectTransFile) && !isset($packageTransFile)) return false;
+
+        $translations = [];
+        $projectTranslations = isset($projectTransFile) ? json_decode(file_get_contents($projectTransFile), true) : [];
+        $packageTranslations = isset($packageTransFile) ? json_decode(file_get_contents($packageTransFile), true) : [];
+        $translations = array_merge($packageTranslations, $projectTranslations);
+
+        $lines = collect($translations)->mapWithKeys(function ($value, $key) {
+            return [Str::contains($key, '.') ? $key : "*.$key" => $value];
+        })->toArray();
 
         app('translator')->addLines($lines, $locale);
+
+        return true;
     }
 
     private function getTranslationsFile($locale, $from, $packageTranslationsDir, $packageName)
