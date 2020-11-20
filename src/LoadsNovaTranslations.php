@@ -2,6 +2,7 @@
 
 namespace OptimistDigital\NovaTranslationsLoader;
 
+use Exception;
 use Laravel\Nova\Nova;
 use Illuminate\Support\Str;
 use Laravel\Nova\Events\ServingNova;
@@ -36,22 +37,22 @@ trait LoadsNovaTranslations
             return;
         }
 
-        if (method_exists('Nova', 'translations')) {
-            Nova::serving(function (ServingNova $event) use ($pckgTransDir, $pckgName) {
-                $locale = app()->getLocale();
-                $fallbackLocale = config('app.fallback_locale');
+        if (!method_exists('Nova', 'translations')) throw new Exception('Nova::translations method not found, please ensure you are using the correct version of Nova.');
 
-                // Load PHP translations
-                $this->loadLaravelTranslations($pckgTransDir, $pckgName);
+        Nova::serving(function (ServingNova $event) use ($pckgTransDir, $pckgName) {
+            $locale = app()->getLocale();
+            $fallbackLocale = config('app.fallback_locale');
 
-                // Attempt to load Nova translations
-                if ($this->loadNovaTranslations($locale, 'project', $pckgTransDir, $pckgName)) return;
-                if ($this->loadNovaTranslations($locale, 'local', $pckgTransDir, $pckgName)) return;
-                if ($this->loadNovaTranslations($fallbackLocale, 'project', $pckgTransDir, $pckgName)) return;
-                if ($this->loadNovaTranslations($fallbackLocale, 'local', $pckgTransDir, $pckgName)) return;
-                $this->loadNovaTranslations('en', 'local', $pckgTransDir, $pckgName);
-            });
-        }
+            // Load PHP translations
+            $this->loadLaravelTranslations($pckgTransDir, $pckgName);
+
+            // Attempt to load Nova translations
+            if ($this->loadNovaTranslations($locale, 'project', $pckgTransDir, $pckgName)) return;
+            if ($this->loadNovaTranslations($locale, 'local', $pckgTransDir, $pckgName)) return;
+            if ($this->loadNovaTranslations($fallbackLocale, 'project', $pckgTransDir, $pckgName)) return;
+            if ($this->loadNovaTranslations($fallbackLocale, 'local', $pckgTransDir, $pckgName)) return;
+            $this->loadNovaTranslations('en', 'local', $pckgTransDir, $pckgName);
+        });
     }
 
     private function loadNovaTranslations($locale, $from, $packageTranslationsDir, $packageName)
