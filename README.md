@@ -21,13 +21,15 @@ composer require optimistdigital/nova-translations-loader
 
 ## Usage
 
-Inside a Laravel's `ServiceProvider`, run the `NovaTranslationsLoader::loadTranslations()` function:
+Inside a Laravel's `ServiceProvider`, use the `LoadsNovaTranslations` trait and call `$this->loadTranslations()`:
 
 ```php
-use OptimistDigital\NovaTranslationsLoader\NovaTranslationsLoader;
+use OptimistDigital\NovaTranslationsLoader\LoadsNovaTranslations;
 
 class SomePackagesServiceProvider extends ServiceProvider
 {
+    use LoadsNovaTranslations;
+
     public function boot()
     {
         // ...
@@ -41,7 +43,7 @@ class SomePackagesServiceProvider extends ServiceProvider
          * @return null
          **/
 
-        NovaTranslationsLoader::loadTranslations(__DIR__ . '/../resources/lang', 'nova-some-package', true);
+        $this->loadTranslations(__DIR__ . '/../resources/lang', 'nova-package', true);
 
         // ...
     }
