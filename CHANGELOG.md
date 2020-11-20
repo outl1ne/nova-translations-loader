@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Dropped PHP 7.1, Laravel 6 and Nova 7 support
+- Dropped PHP 7.1, Laravel 6 and Nova 2 support
 
 ## [2.0.3] - 18-11-2020
 
