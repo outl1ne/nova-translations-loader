@@ -97,13 +97,20 @@ trait LoadsNovaTranslations
 
     private function getTranslationsFile($locale, $from, $packageTranslationsDir, $packageName)
     {
+        if (empty($locale)) return null;
+
         $fileDir = $from === 'local'
             ? $packageTranslationsDir
             : resource_path("lang/vendor/{$packageName}");
 
-        $filePath = $locale ? "$fileDir/{$locale}.json" : $fileDir;
+        $filePath = "$fileDir/{$locale}.json";
 
         $localeFileExists = File::exists($filePath);
-        return $localeFileExists ? $filePath : null;
+        if (!$localeFileExists) return null;
+
+        // Test if file is valid JSON
+        $fileContents = json_decode(file_get_contents($filePath), true);
+
+        return !empty($fileContents) ? $filePath : null;
     }
 }
