@@ -43,7 +43,7 @@ trait LoadsNovaTranslations
             $locale = app()->getLocale();
             $fallbackLocale = config('app.fallback_locale');
 
-            // Load PHP translations
+            // Load Laravel translations
             $this->loadLaravelTranslations($pckgTransDir, $pckgName);
 
             // Attempt to load Nova translations
@@ -86,11 +86,11 @@ trait LoadsNovaTranslations
         $packageTranslations = isset($packageTransFile) ? json_decode(file_get_contents($packageTransFile), true) : [];
         $translations = array_merge($packageTranslations, $projectTranslations);
 
-        $lines = collect($translations)->mapWithKeys(function ($value, $key) {
-            return [Str::contains($key, '.') ? $key : "*.$key" => $value];
+        $translations = collect($translations)->filter(function ($value, $key) {
+            return Str::contains($key, '.');
         })->toArray();
 
-        app('translator')->addLines($lines, $locale);
+        app('translator')->addLines($translations, $locale);
 
         return true;
     }
