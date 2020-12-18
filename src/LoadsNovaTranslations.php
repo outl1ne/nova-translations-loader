@@ -68,7 +68,7 @@ trait LoadsNovaTranslations
     private function loadLaravelTranslations($pckgTransDir, $pckgName)
     {
         $locale = app()->getLocale();
-        $fbLocale = app()->getFallbackLocale();
+        $fbLocale = config('app.fallback_locale');
 
         $this->loadLaravelTranslationsForLocale($locale, $pckgTransDir, $pckgName);
         $this->loadLaravelTranslationsForLocale($fbLocale, $pckgTransDir, $pckgName);
