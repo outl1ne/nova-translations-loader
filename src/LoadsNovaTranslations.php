@@ -43,15 +43,15 @@ trait LoadsNovaTranslations
             $locale = app()->getLocale();
             $fallbackLocale = config('app.fallback_locale');
 
-            // Load Laravel translations
-            $this->loadLaravelTranslations($pckgTransDir, $pckgName);
-
             // Attempt to load Nova translations
             if ($this->loadNovaTranslations($locale, 'project', $pckgTransDir, $pckgName)) return;
             if ($this->loadNovaTranslations($locale, 'local', $pckgTransDir, $pckgName)) return;
             if ($this->loadNovaTranslations($fallbackLocale, 'project', $pckgTransDir, $pckgName)) return;
             if ($this->loadNovaTranslations($fallbackLocale, 'local', $pckgTransDir, $pckgName)) return;
             $this->loadNovaTranslations('en', 'local', $pckgTransDir, $pckgName);
+
+            // Load Laravel translations
+            $this->loadLaravelTranslations($pckgTransDir, $pckgName);
         });
     }
 
