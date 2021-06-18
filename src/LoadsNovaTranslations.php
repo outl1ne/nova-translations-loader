@@ -37,7 +37,7 @@ trait LoadsNovaTranslations
             return;
         }
 
-        if (!method_exists('Nova', 'translations')) throw new Exception('Nova::translations method not found, please ensure you are using the correct version of Nova.');
+        if (!method_exists(Nova::class, 'translations')) throw new Exception('Nova::translations method not found, please ensure you are using the correct version of Nova.');
 
         Nova::serving(function (ServingNova $event) use ($pckgTransDir, $pckgName) {
             $locale = app()->getLocale();
