@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.2] - 18-06-2021
+
+### Changed
+
+- Bumped minimum Laravel version to `7.21` to ensure availability of `app()->getFallbackLocale()`
+
 ## [3.1.1] - 23-11-2020
 
 ### Changed
