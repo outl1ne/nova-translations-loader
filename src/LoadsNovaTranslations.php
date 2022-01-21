@@ -4,9 +4,10 @@ namespace OptimistDigital\NovaTranslationsLoader;
 
 use Exception;
 use Laravel\Nova\Nova;
-use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
+use Illuminate\Container\Container;
 use Laravel\Nova\Events\ServingNova;
-use Illuminate\Support\Facades\File;
+use Illuminate\Contracts\Translation\Loader;
 
 trait LoadsNovaTranslations
 {
@@ -37,80 +38,22 @@ trait LoadsNovaTranslations
             return;
         }
 
+        $this->loadTranslationsFrom($pckgTransDir, 'nova-menu-builder');
+
         if (!method_exists(Nova::class, 'translations')) throw new Exception('Nova::translations method not found, please ensure you are using the correct version of Nova.');
 
         Nova::serving(function (ServingNova $event) use ($pckgTransDir, $pckgName) {
+            /** @var Loader $loader */
+            $loader = Container::getInstance()->make('translation.loader');
+
             $locale = app()->getLocale();
             $fallbackLocale = config('app.fallback_locale');
 
-            // Load Laravel translations
-            $this->loadLaravelTranslations($pckgTransDir, $pckgName);
-
-            // Attempt to load Nova translations
-            if ($this->loadNovaTranslations($locale, 'project', $pckgTransDir, $pckgName)) return;
-            if ($this->loadNovaTranslations($locale, 'local', $pckgTransDir, $pckgName)) return;
-            if ($this->loadNovaTranslations($fallbackLocale, 'project', $pckgTransDir, $pckgName)) return;
-            if ($this->loadNovaTranslations($fallbackLocale, 'local', $pckgTransDir, $pckgName)) return;
-            $this->loadNovaTranslations('en', 'local', $pckgTransDir, $pckgName);
+            Nova::translations(array_merge(
+                Arr::dot($loader->load('en', 'nova', $pckgName), "{$pckgName}::"),
+                Arr::dot($loader->load($fallbackLocale, 'nova', $pckgName), "{$pckgName}::"),
+                Arr::dot($loader->load($locale, 'nova', $pckgName), "{$pckgName}::")
+            ));
         });
-    }
-
-    private function loadNovaTranslations($locale, $from, $packageTranslationsDir, $packageName)
-    {
-        $translationsFile = $this->getTranslationsFile($locale, $from, $packageTranslationsDir, $packageName);
-        if ($translationsFile) {
-            Nova::translations($translationsFile);
-            return true;
-        }
-        return false;
-    }
-
-    private function loadLaravelTranslations($pckgTransDir, $pckgName)
-    {
-        $locale = app()->getLocale();
-        $fbLocale = app()->getFallbackLocale();
-
-        $this->loadLaravelTranslationsForLocale($locale, $pckgTransDir, $pckgName);
-        $this->loadLaravelTranslationsForLocale($fbLocale, $pckgTransDir, $pckgName);
-        $this->loadLaravelTranslationsForLocale('en', $pckgTransDir, $pckgName);
-    }
-
-    private function loadLaravelTranslationsForLocale($locale, $pckgTransDir, $pckgName)
-    {
-        $projectTransFile = $this->getTranslationsFile($locale, 'project', $pckgTransDir, $pckgName);
-        $packageTransFile = $this->getTranslationsFile($locale, 'local', $pckgTransDir, $pckgName);
-        if (!isset($projectTransFile) && !isset($packageTransFile)) return false;
-
-        $translations = [];
-        $projectTranslations = isset($projectTransFile) ? json_decode(file_get_contents($projectTransFile), true) : [];
-        $packageTranslations = isset($packageTransFile) ? json_decode(file_get_contents($packageTransFile), true) : [];
-        $translations = array_merge($packageTranslations, $projectTranslations);
-
-        $translations = collect($translations)->filter(function ($value, $key) {
-            return Str::contains($key, '.');
-        })->toArray();
-
-        app('translator')->addLines($translations, $locale);
-
-        return true;
-    }
-
-    private function getTranslationsFile($locale, $from, $packageTranslationsDir, $packageName)
-    {
-        if (empty($locale)) return null;
-
-        $fileDir = $from === 'local'
-            ? $packageTranslationsDir
-            : resource_path("lang/vendor/{$packageName}");
-
-        $filePath = "$fileDir/{$locale}.json";
-
-        $localeFileExists = File::exists($filePath);
-        if (!$localeFileExists) return null;
-
-        // Test if file is valid JSON
-        $fileContents = json_decode(file_get_contents($filePath), true);
-
-        return !empty($fileContents) ? $filePath : null;
     }
 }
