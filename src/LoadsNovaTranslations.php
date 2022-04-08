@@ -33,7 +33,7 @@ trait LoadsNovaTranslations
     private function translations($pckgTransDir, $pckgName, $publish)
     {
         if (app()->runningInConsole() && $publish) {
-            $this->publishes([$pckgTransDir => resource_path("lang/vendor/{$pckgName}")], 'translations');
+            $this->publishes([$pckgTransDir => lang_path("vendor/{$pckgName}")], 'translations');
             return;
         }
 
@@ -101,7 +101,7 @@ trait LoadsNovaTranslations
 
         $fileDir = $from === 'local'
             ? $packageTranslationsDir
-            : resource_path("lang/vendor/{$packageName}");
+            : lang_path("vendor/{$packageName}");
 
         $filePath = "$fileDir/{$locale}.json";
 
