@@ -1,6 +1,6 @@
 <?php
 
-namespace OptimistDigital\NovaTranslationsLoader;
+namespace Outl1ne\NovaTranslationsLoader;
 
 use Exception;
 use Laravel\Nova\Nova;
