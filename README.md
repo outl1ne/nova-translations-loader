@@ -8,7 +8,7 @@ This [Laravel Nova](https://nova.laravel.com/) package helps developers load tra
 ## Requirements
 
 - `php: >=8.0`
-- `laravel/framework: ^9.0`
+- `laravel/framework: ^9.0|^10.0`
 - `laravel/nova: ^4.0`
 
 ## Installation
