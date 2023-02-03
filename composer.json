@@ -1,33 +1,33 @@
 {
-  "name": "outl1ne/nova-translations-loader",
-  "description": "This Laravel Nova package helps developers load translations into their packages.",
-  "keywords": [
-    "laravel",
-    "nova",
-    "translations",
-    "optimistdigital",
-    "outl1ne"
-  ],
-  "license": "MIT",
-  "require": {
-    "php": ">=8.0",
-    "laravel/framework": "^8.0|^9.0",
-    "laravel/nova": "^4.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Outl1ne\\NovaTranslationsLoader\\": "src/"
-    }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [],
-      "aliases": {}
-    }
-  },
-  "config": {
-    "sort-packages": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+    "name": "outl1ne/nova-translations-loader",
+    "description": "This Laravel Nova package helps developers load translations into their packages.",
+    "keywords": [
+        "laravel",
+        "nova",
+        "translations",
+        "optimistdigital",
+        "outl1ne"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0",
+        "laravel/framework": "^8.0|^9.0|^10.0",
+        "laravel/nova": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Outl1ne\\NovaTranslationsLoader\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": []
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
